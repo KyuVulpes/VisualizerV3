@@ -1,0 +1,81 @@
+﻿<!-- Anything with the `@{..}` is to be replaced when the HTML file is copied to the new location. -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kyu's Readme</title>
+    <style>
+        table, td {
+            border: 1px solid #333;
+            margin: auto;
+            max-width: 40%;
+            align-content: center;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Thank You</h1>
+    <p>Thank you for using my wallpaper. I made it using the <a href="https://unity.com/">Unity Game Engine</a>.
+    It did take a while to make and it has gone through some rewrites along the way to this final project.
+    If you have any issues, you can always ask in the comments on the Steam page. This project is also open-source,
+    if you wish to contribute to the code and make it better, you can. This is the <a href="https://gitlab.com/KuroNekoTNG/wallpaper-visualizer">GitLab Repo</a> where I commit any changes.
+    I will say that I might not continue working on this project, as I have mostly moved on from Windows, and am now using <a href="https://archlinux.org/">Arch Linux</a>.
+    And while I would love to port this over to Linux, there is a couple of problems with that. For one, Unity does not support graphics redirection in Linux by the looks of things.
+    The second obsticle is that each <a href="https://en.wikipedia.org/wiki/Desktop_environment">desktop environment</a> contains different ways of changing the wallpaper.
+    <br>
+    If you are a Linux programmer, and know how I could achieve this, can you teach me? I would love to learn about doing new things in the world of computing. But also don't be a bitch about it.
+    C# is my favorite programming language that I am most comfortable working with. I could work in C++, but I don't know all of the syntax surgar of that language or best practice.</p>
+    <h1>Configuration</h1>
+    <p>Wondering how to configure the wallpaper? Well it is quite simple. Open the JSON file located at `<a href="@{config_file_location}">@{config_file_location}</a>` and configure the options present.
+    Of course not all options are visable at the start, but the config is mainly what I thought most people would like to edit. Here is an entire list of options:</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Option</th>
+                <th>Potential Values/Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>visualizer.ringType</td>
+                <td>This option controls the cental ring around the image. Here are the following values for the type:<br><ul>@{bar_types}</ul></td>
+            </tr>
+            <tr>
+                <td>bloom.intensity</td>
+                <td>Controls how bright the bloom is. 0 means that bloom will be off, I do not recommend going above 1 as that can cause color banding and/or hurt your eyes.</td>
+            </tr>
+            <tr>
+                <td>visualizer.rotSpeed</td>
+                <td>This controls the speed at which the visualizer goes around the image. A negitive value will send it in the opposite direction.</td>
+            </tr>
+            <tr>
+                <td>unity.vsync</td>
+                <td>Tells the Unity game engine rather to use VSync or not. It is recommended to leave this on unless you are experensing low framerate.</td>
+            </tr>
+            <tr>
+                <td>bloom.enabled</td>
+                <td>This is here for legacy reasons, it does nothing.</td>
+            </tr>
+            <tr>
+                <td>vis.embersEnabled</td>
+                <td>Controls if embers will fall down from the top of the screen or not.</td>
+            </tr>
+            <tr>
+                <td>vis.bandAmount</td>
+                <td>Controls how many bands are on the screen. Note that the range for this value is [8,128]. Setting this value outside the range will be ignored.
+                    <br>
+                    You may note like it, but anything outside this range can cause stability issues, graphical issues, and memory issues. Trust me, don't do it.
+                </td>
+            </tr>
+            <tr>
+                <td>logo.imagePath</td>
+                <td>This option changes the logo in the center of the screen. It is recommended to use an image that is 1200x1200, otherwise the image might be either too small or too big.
+                To see if the image will fit, and you have <a href="https://www.blender.org/">Blender</a> or know how to use it, an Object file is located at `@{obj_file_loc}`.
+                The default scale for images is 100px = 1 Unity Unit, for those who need to know.</td>
+            </tr>
+        </tbody>
+    </table>
+    <p>If there is no JSON file but there is a binary file, do not worry. The binary file is deprecated as it was a work around for me failing to get Newtonsoft.JSON working.
+    It does work now, so if you delete the binary file and rerun the wallpaper, it should place a JSON file there. Note that the</p>
+</body>
+</html>

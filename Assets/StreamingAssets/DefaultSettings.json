@@ -1,0 +1,9 @@
+﻿{
+  "bloom.intensity": 1.0,
+  "visualizer.rotSpeed": 100,
+  "unity.vsync": true,
+  "visualizer.ringType": "VisualizerLayouts.MirroredCircle",
+  "bloom.enabled": true,
+  "vis.embersEnabled": true,
+  "vis.bandAmount": 256
+}
