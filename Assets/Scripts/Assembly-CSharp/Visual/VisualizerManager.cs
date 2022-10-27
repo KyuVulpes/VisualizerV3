@@ -6,7 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Serialization;
-using VisualizerV3.Audio.Shapes;
+using VisualizerV3.Visual.Shapes;
 
 namespace VisualizerV3.Audio {
 	public class VisualizerManager : MonoBehaviour {
