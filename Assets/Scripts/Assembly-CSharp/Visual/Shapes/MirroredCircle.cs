@@ -27,18 +27,6 @@ namespace VisualizerV3.Visual.Shapes {
 				rotationArray[i] = angle;
 				barNums[i]       = i < count ? i : i - ( ( i % count ) + offset++ );
 			}
-
-			var builder = new StringBuilder().AppendLine( $"barNums Length:\t{barNums.Length}" ).Append( "{ " );
-
-			for ( var i = 0; i < barNums.Length; ++i ) {
-				builder.Append( barNums[i] );
-
-				if ( i < barNums.Length - 1 ) {
-					builder.Append( ", " );
-				}
-			}
-
-			Debug.Log( builder.Append( " }" ).ToString() );
 		}
 	}
 }
