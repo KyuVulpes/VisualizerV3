@@ -28,6 +28,8 @@ namespace VisualizerV3.Audio {
 				try {
 					audioDeviceListener = new AudioDeviceListener( mmDevice );
 				} catch ( CoreAudioAPIException e ) {
+					Debug.LogException( e );
+					
 					continue;
 				} finally {
 					++mmDeviceCount;
@@ -102,6 +104,8 @@ namespace VisualizerV3.Audio {
 						try {
 							newAudioDeviceListener = new AudioDeviceListener( mmDevice );
 						} catch ( CoreAudioAPIException e ) {
+							Debug.LogException( e );
+							
 							continue;
 						} finally {
 							++mmDeviceCount;

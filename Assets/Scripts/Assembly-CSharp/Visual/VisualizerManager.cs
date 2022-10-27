@@ -2,9 +2,7 @@
 using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.Serialization;
 using VisualizerV3.Visual.Shapes;
 
@@ -31,7 +29,7 @@ namespace VisualizerV3.Audio {
 		public float DissolveSpeed => dissolveSpeed;
 
 		// ReSharper disable once MemberCanBePrivate.Global
-		public IVisualizeShape ShapeCreator {
+		public VisualizerShape ShapeCreator {
 			get => shapeCreator;
 			set {
 				if ( value is null ) {
@@ -79,7 +77,7 @@ namespace VisualizerV3.Audio {
 
 		private Vector3Int rotateSpeed = Vector3Int.zero;
 
-		private IVisualizeShape shapeCreator;
+		private VisualizerShape shapeCreator;
 
 		private CancellationTokenSource tokenSource;
 

@@ -2,9 +2,9 @@
 using UnityEngine;
 
 namespace VisualizerV3.Visual.Shapes {
-	public class MirroredCircle : IVisualizeShape {
+	public class MirroredCircle : VisualizerShape {
 
-		public void GenerateShape( in int count, in float radius, in Vector3 parentPos, out Vector3[] posArray, out Quaternion[] rotationArray, out int[] barNums ) {
+		public override void GenerateShape( in int count, in float radius, in Vector3 parentPos, out Vector3[] posArray, out Quaternion[] rotationArray, out int[] barNums ) {
 			var amountToSpawn = count * 2;
 			var offset        = 1;
 
