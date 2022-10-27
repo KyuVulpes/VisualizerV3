@@ -353,7 +353,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radius: 5
-  scale: 0.5
+  scale: 0.4
   upperBound: 3
   dissolveSpeed: 128
   idleTimeout: 4
