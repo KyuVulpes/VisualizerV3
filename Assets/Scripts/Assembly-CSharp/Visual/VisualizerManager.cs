@@ -111,8 +111,8 @@ namespace VisualizerV3.Audio {
 			//Settings.SettingsRefreshed += UpdateSettings;
 
 			//UpdateSettings();
-			
-			ShapeCreator = new MirroredCircle();
+
+			ShapeCreator = new SatanCircle();
 
 			processor.BandAmountChanged += _ => {
 				if ( Application.isEditor ) {
