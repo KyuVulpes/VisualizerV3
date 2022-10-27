@@ -30,10 +30,6 @@ namespace VisualizerV3.Visual.Shapes {
 					reverse = !reverse;
 				}
 
-				if ( i % count == 64 ) {
-					Debug.Break();
-				}
-
 				var barNum = i % count;
 
 				if ( reverse ) {
