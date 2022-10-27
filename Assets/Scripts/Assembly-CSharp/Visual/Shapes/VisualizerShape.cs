@@ -5,6 +5,9 @@ namespace VisualizerV3.Visual.Shapes {
 	/// Used to make a consistent way to build a visualizer pattern.
 	/// </summary>
 	public abstract class VisualizerShape {
+		/// <summary>
+		/// A cached value of Tau so it doesn't need to calculate at runtime or when someone else is compiling their code.
+		/// </summary>
 		protected static float Tau {
 			get => Mathf.PI * 2;
 		}
