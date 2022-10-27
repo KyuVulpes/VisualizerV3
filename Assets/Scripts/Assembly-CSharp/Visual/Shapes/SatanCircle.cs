@@ -13,10 +13,8 @@ namespace VisualizerV3.Visual.Shapes {
 			barNums       = new int[amountToSpawn];
 
 			for ( var i = 0; i < amountToSpawn; ++i ) {
-				var theta = ( ( 2 * Mathf.PI ) / amountToSpawn ) * i;
-				var x     = radius * Mathf.Sin( theta );
-				var y     = radius * Mathf.Cos( theta );
-				var pos   = new Vector3( x, y, 0 );
+				var theta = ( Tau / amountToSpawn ) * i;
+				var pos   = GetXAndY( radius, theta );
 				var angle = Quaternion.LookRotation( parentPos - pos, Vector3.forward );
 
 				angle.eulerAngles = new Vector3() {
