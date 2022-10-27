@@ -9,6 +9,12 @@ namespace VisualizerV3.Visual.Shapes {
 			get => Mathf.PI * 2;
 		}
 
+		/// <summary>
+		/// Simple helper method to get a point on a 2D circle.
+		/// </summary>
+		/// <param name="radius">How big the circle is in radius.</param>
+		/// <param name="theta">The angle from up.</param>
+		/// <returns>A <see cref="Vector3"/> for the 3D space.</returns>
 		protected static Vector3 GetXAndY( float radius, float theta ) {
 			var x = radius * Mathf.Sin( theta );
 			var y = radius * Mathf.Cos( theta );
@@ -25,10 +31,7 @@ namespace VisualizerV3.Visual.Shapes {
 		///
 		/// It is always best to fill up the <paramref name="barNums"/> with appropriate values, the reason it
 		/// exists and needs to be filled is in cases where the bar count is bigger than <paramref name="count"/>.
-		/// For example, when making a mirrored circle:
-		/// <code>
-		///	
-		/// </code>
+		/// An example of this is when making a mirrored circle.
 		/// </remarks>
 		/// <param name="count">The number of visualizer bars that are needed.</param>
 		/// <param name="radius">How big the circle is.</param>
