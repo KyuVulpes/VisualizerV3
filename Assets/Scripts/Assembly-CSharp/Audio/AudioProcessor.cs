@@ -13,14 +13,14 @@ namespace VisualizerV3.Audio {
 		public event Action<byte> BandAmountChanged;
 
 		public byte BandAmount {
-			get => _bandAmount;
+			get => bandAmount;
 			private set {
-				if ( _bandAmount == value ) {
+				if ( bandAmount == value ) {
 					return;
 				}
 
 				if ( 8 <= value ) {
-					_bandAmount = value;
+					bandAmount = value;
 				} else {
 					throw new ArgumentOutOfRangeException( nameof( value ), value, $"`{nameof( value )}` has to be within [8, 128]." );
 				}
@@ -46,10 +46,9 @@ namespace VisualizerV3.Audio {
 
 		private bool updating;
 
-		[FormerlySerializedAs( "bandAmount" )]
+		[FormerlySerializedAs( "_bandAmount" )]
 		[SerializeField, Range( 8, 128 )]
-		[SuppressMessage( "ReSharper", "InconsistentNaming" )]
-		private byte _bandAmount = 128;
+		private byte bandAmount = 128;
 
 		[SerializeField, Range( 0.001f, 5f )]
 		private float decreaseSpeed = 1.15f;
@@ -108,7 +107,7 @@ namespace VisualizerV3.Audio {
 		private void GenerateBands() {
 			var lastIndex = 0;
 
-			for ( var i = 0; i < _bandAmount; ++i ) {
+			for ( var i = 0; i < bandAmount; ++i ) {
 				var average   = 0f;
 				var sampCount = GetSampleCount( i );
 				var tempLast  = 0;
@@ -127,16 +126,16 @@ namespace VisualizerV3.Audio {
 			}
 
 			int GetSampleCount( int pos ) {
-				var value = Mathf.Pow( 3f, ( int )( pos / ( _bandAmount / 4f ) ) );
+				var value = Mathf.Pow( 3f, ( int )( pos / ( bandAmount / 4f ) ) );
 
-				value = Mathf.Clamp( value, 1f, _bandAmount );
+				value = Mathf.Clamp( value, 1f, bandAmount );
 
 				return Mathf.RoundToInt( value );
 			}
 		}
 
 		private void GenerateBufferBands() {
-			for ( var i = 0; i < _bandAmount; ++i ) {
+			for ( var i = 0; i < bandAmount; ++i ) {
 				if ( bandDecrease[i] == 0f ) {
 					bandDecrease[i] = DEFAULT_DECREASE_VALUE;
 				}
@@ -156,9 +155,9 @@ namespace VisualizerV3.Audio {
 		}
 
 		private void GenerateFloatArrays() {
-			freqBands         = new float[_bandAmount];
-			bufferedFreqBands = new float[_bandAmount];
-			bandDecrease      = new float[_bandAmount];
+			freqBands         = new float[bandAmount];
+			bufferedFreqBands = new float[bandAmount];
+			bandDecrease      = new float[bandAmount];
 		}
 	}
 }
