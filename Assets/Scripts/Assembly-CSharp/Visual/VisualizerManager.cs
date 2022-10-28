@@ -97,13 +97,13 @@ namespace VisualizerV3.Audio {
 		private Gradient      gradientToUse;
 		private AudioProcessor     audioProcessor;
 		private Coroutine     activeSwitch;
-		private List<Reactor> reactors;
+		private List<BarReactor> reactors;
 
 		public Color GetColor( float value ) => gradientToUse.Evaluate( value );
 
 		// Start is called before the first frame update
 		private void Awake() {
-			reactors    = new List<Reactor>();
+			reactors    = new List<BarReactor>();
 			tokenSource = new CancellationTokenSource();
 			audioProcessor   = GetComponent<AudioProcessor>();
 
@@ -297,19 +297,19 @@ namespace VisualizerV3.Audio {
 
 			// Loops through the entire array of reactors to be used.
 			for ( var i = 0; i < posArray.Length; ++i ) {
-				Reactor   reactor;
+				BarReactor   barReactor;
 				Transform rTrans;
 				var       created = false;
 
 				// A simple check to see if a reactor needs to be created or reused.
 				if ( i >= transform.childCount ) {
 					rTrans  = Instantiate( VisualizerResources.CUBE, transform ).transform;
-					reactor = rTrans.GetComponent<Reactor>();
+					barReactor = rTrans.GetComponent<BarReactor>();
 
 					created = true;
 				} else {
 					rTrans  = transform.GetChild( i );
-					reactor = rTrans.GetComponent<Reactor>();
+					barReactor = rTrans.GetComponent<BarReactor>();
 				}
 
 				// This section is setting all the data for the reactor.
@@ -317,14 +317,14 @@ namespace VisualizerV3.Audio {
 				rTrans.localRotation =  rotArray[i];
 				rTrans.localScale    *= newScale;
 
-				reactor.BandNumber = barNums[i];
+				barReactor.BandNumber = barNums[i];
 
 				// If reactor is created, storing it for use later.
 				if ( created ) {
-					reactors.Add( reactor );
+					reactors.Add( barReactor );
 				}
 
-				var reactorGameObject = reactor.gameObject;
+				var reactorGameObject = barReactor.gameObject;
 
 				reactorGameObject.SetActive( true );
 				reactorGameObject.name = $"Bar {i}.{barNums[i]}";

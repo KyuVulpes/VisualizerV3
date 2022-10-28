@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace VisualizerV3.Audio {
-	public class Reactor : MonoBehaviour {
+	public class BarReactor : MonoBehaviour {
 		private static readonly int BAR_COLOR        = Shader.PropertyToID( "_BarColor" );
 		private static readonly int GLOW_COLOR       = Shader.PropertyToID( "_GlowColor" );
 		private static readonly int DISSOLVE_PERCENT = Shader.PropertyToID( "_DissolvePercent" );
