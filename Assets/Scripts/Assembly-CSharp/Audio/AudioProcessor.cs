@@ -10,6 +10,13 @@ namespace VisualizerV3.Audio {
 
 		private const string BAND_AMOUNT_KEY = "vis.bandAmount";
 
+		public enum BandFreq : byte {
+			Base      = 0,
+			Mids      = 1,
+			UpperMids = 2,
+			Highs     = 3,
+		}
+
 		public static AudioProcessor MainProcessor {
 			get;
 			private set;
@@ -43,6 +50,18 @@ namespace VisualizerV3.Audio {
 
 					throw;
 				}
+			}
+		}
+
+		public float this[ BandFreq freq ] {
+			get {
+				return freq switch {
+					BandFreq.Base      => BaseBand,
+					BandFreq.Mids      => MidBand,
+					BandFreq.UpperMids => MidHighs,
+					BandFreq.Highs     => Highs,
+					_                  => throw new ArgumentOutOfRangeException( nameof( freq ), "Expected an Enum within the range of (0,3)." )
+				};
 			}
 		}
 
@@ -86,6 +105,8 @@ namespace VisualizerV3.Audio {
 		private float[] freqBands;
 		private float[] bufferedFreqBands;
 
+		public float GetFreqBand( BandFreq freq ) => this[freq];
+
 		// Start is called before the first frame update
 		[SuppressMessage( "Style", "IDE0062:Make local function 'static'", Justification = "Unity No Likes." )]
 		private void Awake() {
@@ -96,7 +117,7 @@ namespace VisualizerV3.Audio {
 			}
 
 			MainProcessor = this;
-			
+
 			//Settings.SettingsRefreshed += SettingsRefreshed;
 
 			//SettingsRefreshed();
@@ -157,7 +178,7 @@ namespace VisualizerV3.Audio {
 					MidBand = average / ( second - first );
 
 					average = 0f;
-				}else if ( i == third ) {
+				} else if ( i == third ) {
 					MidHighs = average / ( third - second );
 
 					average = 0f;
