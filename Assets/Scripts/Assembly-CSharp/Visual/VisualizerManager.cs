@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -15,18 +16,17 @@ namespace VisualizerV3.Audio {
 		// ReSharper disable once MemberCanBePrivate.Global
 		public bool UseHoliday { get; set; } = true;
 
-		public float Scale => scale;
-
-		public float UpperBound => upperBound;
-
-		// ReSharper disable once MemberCanBePrivate.Global
-		public int RotateSpeed {
-			// ReSharper disable once UnusedMember.Global
-			get => rotateSpeed.z;
-			set => rotateSpeed.z = value;
+		public float Scale {
+			get => scale;
 		}
 
-		public float DissolveSpeed => dissolveSpeed;
+		public float UpperBound {
+			get => upperBound;
+		}
+
+		public float DissolveSpeed {
+			get => dissolveSpeed;
+		}
 
 		// ReSharper disable once MemberCanBePrivate.Global
 		public VisualizerShape ShapeCreator {
@@ -93,16 +93,17 @@ namespace VisualizerV3.Audio {
 		[SerializeField, GradientUsage( true )]
 		private Gradient holidayGradient;
 
-		private Gradient  gradientToUse;
-		private Reactor[] reactors;
-		private Processor processor;
-		private Coroutine activeSwitch;
-		private Task      nowSetter;
+		private Task          nowSetter;
+		private Gradient      gradientToUse;
+		private Processor     processor;
+		private Coroutine     activeSwitch;
+		private List<Reactor> reactors;
 
 		public Color GetColor( float value ) => gradientToUse.Evaluate( value );
 
 		// Start is called before the first frame update
 		private void Awake() {
+			reactors    = new List<Reactor>();
 			tokenSource = new CancellationTokenSource();
 			processor   = GetComponent<Processor>();
 
@@ -120,7 +121,7 @@ namespace VisualizerV3.Audio {
 				updateRing = true;
 			};
 
-			nowSetter = new Task( () => {} );
+			nowSetter = new Task( () => { } );
 
 			nowSetter.Start();
 
@@ -178,7 +179,7 @@ namespace VisualizerV3.Audio {
 					CheckForActivity();
 				}
 
-				transform.Rotate( (Vector3) rotateSpeed * Time.deltaTime );
+				transform.Rotate( ( Vector3 )rotateSpeed * Time.deltaTime );
 			}
 
 			try {
@@ -286,32 +287,46 @@ namespace VisualizerV3.Audio {
 
 			ready = false;
 
-			reactors = new Reactor[posArray.Length];
-
-			for ( var i = 0; i < transform.childCount; ++i ) {
-				Destroy( transform.GetChild( i ).gameObject );
+			if ( posArray.Length < reactors.Count ) {
+				for ( var i = posArray.Length; i < reactors.Count; ++i ) {
+					reactors[i].gameObject.SetActive( false );
+				}
 			}
 
 			for ( var i = 0; i < posArray.Length; ++i ) {
-				// No way around it since that `GetComponent` method is needed.
-				// The only other option is pooling, but that adds unnecessary complexity because there is an unknown amount of cubes needed.
-				// ReSharper disable once Unity.PerformanceCriticalCodeInvocation
-				var reactor    = Instantiate( VisualizerResources.CUBE, transform ).GetComponent<Reactor>();
-				var rTransform = reactor.transform;
-				
-				rTransform.localPosition =  posArray[i];
-				rTransform.localRotation =  rotArray[i];
-				rTransform.localScale    *= newScale;
+				Reactor   reactor;
+				Transform rTrans;
+				var       created = false;
+
+				if ( i >= transform.childCount ) {
+					rTrans  = Instantiate( VisualizerResources.CUBE, transform ).transform;
+					reactor = rTrans.GetComponent<Reactor>();
+
+					created = true;
+				} else {
+					rTrans  = transform.GetChild( i );
+					reactor = rTrans.GetComponent<Reactor>();
+				}
+
+				rTrans.localPosition =  posArray[i];
+				rTrans.localRotation =  rotArray[i];
+				rTrans.localScale    *= newScale;
 
 				reactor.BandNumber = barNums[i];
 
-				reactors[i] = reactor;
+				if ( created ) {
+					reactors.Add( reactor );
+				}
+
+				var reactorGameObject = reactor.gameObject;
+
+				reactorGameObject.SetActive( true );
+				reactorGameObject.name = $"Bar {i}.{barNums[i]}";
 
 				yield return new WaitForEndOfFrame();
 			}
 
-			ready = true;
-
+			ready        = true;
 			activeSwitch = null;
 		}
 	}
