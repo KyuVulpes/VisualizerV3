@@ -10,6 +10,11 @@ namespace VisualizerV3.Audio {
 
 		private const string BAND_AMOUNT_KEY = "vis.bandAmount";
 
+		public static AudioProcessor MainProcessor {
+			get;
+			private set;
+		}
+
 		public event Action<byte> BandAmountChanged;
 
 		public byte BandAmount {
@@ -84,6 +89,14 @@ namespace VisualizerV3.Audio {
 		// Start is called before the first frame update
 		[SuppressMessage( "Style", "IDE0062:Make local function 'static'", Justification = "Unity No Likes." )]
 		private void Awake() {
+			if ( MainProcessor != null ) {
+				Destroy( this );
+
+				return;
+			}
+
+			MainProcessor = this;
+			
 			//Settings.SettingsRefreshed += SettingsRefreshed;
 
 			//SettingsRefreshed();
