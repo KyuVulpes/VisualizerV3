@@ -287,17 +287,20 @@ namespace VisualizerV3.Audio {
 
 			ready = false;
 
+			// Checks for any unused reactors and disables them to free up CPU and GPU resources.
 			if ( posArray.Length < reactors.Count ) {
 				for ( var i = posArray.Length; i < reactors.Count; ++i ) {
 					reactors[i].gameObject.SetActive( false );
 				}
 			}
 
+			// Loops through the entire array of reactors to be used.
 			for ( var i = 0; i < posArray.Length; ++i ) {
 				Reactor   reactor;
 				Transform rTrans;
 				var       created = false;
 
+				// A simple check to see if a reactor needs to be created or reused.
 				if ( i >= transform.childCount ) {
 					rTrans  = Instantiate( VisualizerResources.CUBE, transform ).transform;
 					reactor = rTrans.GetComponent<Reactor>();
@@ -308,12 +311,14 @@ namespace VisualizerV3.Audio {
 					reactor = rTrans.GetComponent<Reactor>();
 				}
 
+				// This section is setting all the data for the reactor.
 				rTrans.localPosition =  posArray[i];
 				rTrans.localRotation =  rotArray[i];
 				rTrans.localScale    *= newScale;
 
 				reactor.BandNumber = barNums[i];
 
+				// If reactor is created, storing it for use later.
 				if ( created ) {
 					reactors.Add( reactor );
 				}
@@ -323,6 +328,7 @@ namespace VisualizerV3.Audio {
 				reactorGameObject.SetActive( true );
 				reactorGameObject.name = $"Bar {i}.{barNums[i]}";
 
+				// Let everything else have a turn now.
 				yield return new WaitForEndOfFrame();
 			}
 
