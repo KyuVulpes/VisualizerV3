@@ -21,8 +21,8 @@ namespace VisualizerV3.Editor {
 		}
 
 		public override void OnInspectorGUI() {
-
 			serializedObject.Update();
+			
 			EditorGUILayout.PropertyField( useBuffer );
 			EditorGUILayout.PropertyField( bandAmount );
 			EditorGUILayout.PropertyField( decreaseSpeed );
