@@ -4,6 +4,8 @@ using VisualizerV3.Audio;
 namespace VisualizerV3.Visual {
 	public class Rotater : MonoBehaviour {
 		[SerializeField]
+		private bool reactToAudio;
+		[SerializeField]
 		private float baseSpeed = 1f;
 		
 		[SerializeField]
@@ -20,9 +22,15 @@ namespace VisualizerV3.Visual {
 
 		// Update is called once per frame
 		private void Update() {
-			var increaseBy = processor.GetFreqBand( grab ) + baseSpeed;
+			float speed;
 			
-			transform.Rotate( increaseBy * Time.deltaTime * rotationSpeed, Space.Self );
+			if ( reactToAudio ) {
+				speed = processor.GetFreqBand( grab ) + baseSpeed;
+			} else {
+				speed = 1f;
+			}
+			
+			transform.Rotate( speed * Time.deltaTime * rotationSpeed, Space.Self );
 		}
 	}
 }
