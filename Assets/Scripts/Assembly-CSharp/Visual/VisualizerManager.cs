@@ -95,7 +95,7 @@ namespace VisualizerV3.Audio {
 
 		private Task          nowSetter;
 		private Gradient      gradientToUse;
-		private Processor     processor;
+		private AudioProcessor     audioProcessor;
 		private Coroutine     activeSwitch;
 		private List<Reactor> reactors;
 
@@ -105,7 +105,7 @@ namespace VisualizerV3.Audio {
 		private void Awake() {
 			reactors    = new List<Reactor>();
 			tokenSource = new CancellationTokenSource();
-			processor   = GetComponent<Processor>();
+			audioProcessor   = GetComponent<AudioProcessor>();
 
 			//Settings.SettingsRefreshed += UpdateSettings;
 
@@ -113,7 +113,7 @@ namespace VisualizerV3.Audio {
 
 			ShapeCreator = new SatanCircle();
 
-			processor.BandAmountChanged += _ => {
+			audioProcessor.BandAmountChanged += _ => {
 				if ( Application.isEditor ) {
 					Debug.Log( "Band Amount changed, telling ring to update." );
 				}
@@ -195,7 +195,7 @@ namespace VisualizerV3.Audio {
 			}
 
 			void MakeReactorsReact() {
-				lock ( processor ) {
+				lock ( audioProcessor ) {
 					foreach ( var reactor in reactors ) {
 						if ( reactor is null || !reactor ) {
 							continue;
@@ -220,8 +220,8 @@ namespace VisualizerV3.Audio {
 		}
 
 		private void CheckForActivity() {
-			for ( var i = 0; i < processor.BandAmount; ++i ) {
-				if ( processor[i] <= 0f ) {
+			for ( var i = 0; i < audioProcessor.BandAmount; ++i ) {
+				if ( audioProcessor[i] <= 0f ) {
 					continue;
 				}
 
@@ -233,8 +233,8 @@ namespace VisualizerV3.Audio {
 		}
 
 		private void CheckForIdle() {
-			for ( var i = 0; i < processor.BandAmount; ++i ) {
-				if ( processor[i] == 0f ) {
+			for ( var i = 0; i < audioProcessor.BandAmount; ++i ) {
+				if ( audioProcessor[i] == 0f ) {
 					continue;
 				}
 
@@ -274,12 +274,12 @@ namespace VisualizerV3.Audio {
 		}
 
 		private IEnumerator ChangeRing() {
-			var scaleFactor = processor.BandAmount / 128f;
+			var scaleFactor = audioProcessor.BandAmount / 128f;
 			var newScale    = Mathf.Pow( 1f / scaleFactor, 1.2f );
 
 			// I do not understand what makes this an expensive method call.
 			// ReSharper disable once Unity.PerformanceCriticalCodeInvocation
-			shapeCreator.GenerateShape( processor.BandAmount, radius, transform.position, out var posArray, out var rotArray, out var barNums );
+			shapeCreator.GenerateShape( audioProcessor.BandAmount, radius, transform.position, out var posArray, out var rotArray, out var barNums );
 
 			#if UNITY_EDITOR
 			// ReSharper disable once Unity.PerformanceCriticalCodeInvocation

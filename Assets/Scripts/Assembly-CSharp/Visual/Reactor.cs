@@ -11,10 +11,10 @@ namespace VisualizerV3.Audio {
 
 		private float minHeight;
 
-		private Processor        processor;
+		private AudioProcessor    audioProcessor;
 		private VisualizerManager visManager;
-		private Material         mat;
-		private Coroutine        dissolveRoutine;
+		private Material          mat;
+		private Coroutine         dissolveRoutine;
 
 		// Update is called once per frame
 		internal void React() {
@@ -22,7 +22,7 @@ namespace VisualizerV3.Audio {
 			UpdateColor();
 
 			void UpdateHeight() {
-				var height   = processor[BandNumber] * visManager.Scale;
+				var height   = audioProcessor[BandNumber] * visManager.Scale;
 				var oldScale = transform.localScale;
 
 				height = Mathf.Clamp( height, minHeight, visManager.UpperBound );
@@ -40,9 +40,9 @@ namespace VisualizerV3.Audio {
 
 		// Use this for initialization
 		private void Start() {
-			processor  = GetComponentInParent<Processor>();
-			visManager = GetComponentInParent<VisualizerManager>();
-			mat        = GetComponent<MeshRenderer>().material;
+			audioProcessor = GetComponentInParent<AudioProcessor>();
+			visManager     = GetComponentInParent<VisualizerManager>();
+			mat            = GetComponent<MeshRenderer>().material;
 
 			visManager.StartDissolveEffect += Dissolve;
 

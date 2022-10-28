@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace VisualizerV3.Audio {
-	public class Processor : MonoBehaviour {
+	public class AudioProcessor : MonoBehaviour {
 		private const int   SAMPLE_COUNT           = 512;
 		private const float DEFAULT_DECREASE_VALUE = 0.005f;
 
