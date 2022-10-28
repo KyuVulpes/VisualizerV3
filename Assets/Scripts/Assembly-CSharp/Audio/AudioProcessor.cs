@@ -41,6 +41,26 @@ namespace VisualizerV3.Audio {
 			}
 		}
 
+		public float BaseBand {
+			get;
+			private set;
+		}
+
+		public float MidBand {
+			get;
+			private set;
+		}
+
+		public float MidHighs {
+			get;
+			private set;
+		}
+
+		public float Highs {
+			get;
+			private set;
+		}
+
 		[SerializeField]
 		private bool useBuffer;
 
@@ -52,6 +72,9 @@ namespace VisualizerV3.Audio {
 
 		[SerializeField, Range( 0.001f, 5f )]
 		private float decreaseSpeed = 1.15f;
+
+		[SerializeField]
+		private Vector3 separators;
 
 		private float[] bandDecrease;
 		private float[] samples;
@@ -100,8 +123,37 @@ namespace VisualizerV3.Audio {
 
 			GenerateBands();
 			GenerateBufferBands();
+			CalculateFreqBands();
 
 			updating = false;
+		}
+
+		private void CalculateFreqBands() {
+			var first   = Mathf.RoundToInt( samples.Length * separators.x );
+			var second  = Mathf.RoundToInt( samples.Length * separators.y ) + first;
+			var third   = Mathf.RoundToInt( samples.Length * separators.z ) + second;
+			var highs   = samples.Length - third;
+			var average = 0f;
+
+			for ( var i = 0; i < samples.Length; ++i ) {
+				if ( i == first ) {
+					BaseBand = average / first;
+
+					average = 0f;
+				} else if ( i == second ) {
+					MidBand = average / ( second - first );
+
+					average = 0f;
+				}else if ( i == third ) {
+					MidHighs = average / ( third - second );
+
+					average = 0f;
+				}
+
+				average += samples[i];
+			}
+
+			Highs = average / highs;
 		}
 
 		private void GenerateBands() {
