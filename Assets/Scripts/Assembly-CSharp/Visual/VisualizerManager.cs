@@ -246,6 +246,7 @@ namespace VisualizerV3.Audio {
 			idleTime += Time.deltaTime;
 		}
 
+		// TODO: Work on implementing the settings manager.
 		private void UpdateSettings() {
 			// if ( Settings.Singleton.TryGetSetting( ROTATE_SPEED_SETTING, out float rotSpeed ) ) {
 			// 	RotateSpeed = (int) rotSpeed;
