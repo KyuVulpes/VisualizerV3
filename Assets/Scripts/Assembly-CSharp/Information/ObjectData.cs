@@ -11,6 +11,8 @@ namespace VisualizerV3.Information {
 		private string version;
 		[SerializeField]
 		private string copyright;
+		[SerializeField]
+		private string projectName;
 
 		[SerializeField]
 		private Texture2D icon;
