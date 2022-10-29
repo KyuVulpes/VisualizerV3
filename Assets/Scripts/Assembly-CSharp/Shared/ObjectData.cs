@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace VisualizerV3.Information {
+namespace VisualizerV3.Shared {
 	public class ObjectData : MonoBehaviour {
 
 		[SerializeField]

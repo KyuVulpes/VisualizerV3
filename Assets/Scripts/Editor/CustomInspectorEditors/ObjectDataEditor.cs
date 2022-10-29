@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using VisualizerV3.Information;
+using VisualizerV3.Shared;
 
 namespace VisualizerV3.Editor {
 	[CustomEditor( typeof(ObjectData) )]
