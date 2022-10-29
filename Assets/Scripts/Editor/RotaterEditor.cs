@@ -1,6 +1,5 @@
-﻿using System;
-using UnityEditor;
-using VisualizerV3.Visual;
+﻿using UnityEditor;
+using VisualizerV3.Visual.Reactions;
 
 namespace VisualizerV3.Editor {
 	[CustomEditor(typeof(Rotater))]

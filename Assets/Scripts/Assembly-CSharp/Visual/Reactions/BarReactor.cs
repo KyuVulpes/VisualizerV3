@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using UnityEngine;
+using VisualizerV3.Audio;
 
-namespace VisualizerV3.Audio {
+namespace VisualizerV3.Visual.Reactions {
 	public class BarReactor : MonoBehaviour {
 		private static readonly int BAR_COLOR        = Shader.PropertyToID( "_BarColor" );
 		private static readonly int GLOW_COLOR       = Shader.PropertyToID( "_GlowColor" );

@@ -1,7 +1,7 @@
 using UnityEngine;
 using VisualizerV3.Audio;
 
-namespace VisualizerV3.Visual {
+namespace VisualizerV3.Visual.Reactions {
 	public class Rotater : MonoBehaviour {
 		[SerializeField]
 		private bool reactToAudio;

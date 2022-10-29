@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Serialization;
+using VisualizerV3.Visual.Reactions;
 using VisualizerV3.Visual.Shapes;
 
 namespace VisualizerV3.Audio {
