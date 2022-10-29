@@ -90,6 +90,8 @@ namespace VisualizerV3.Editor {
 			// Now builds the object into an AssetBundle.
 			BuildToAssetBundle( toSave, details, saveFolder, out var abPath, out var manifestPath );
 
+			Object.DestroyImmediate( toSave );
+
 			var json = JsonConvert.SerializeObject(
 				details,
 				Formatting.None,
@@ -102,6 +104,9 @@ namespace VisualizerV3.Editor {
 			);
 
 			ConvertToStoreFile( saveFolder, abPath, manifestPath, json, details );
+			
+			File.Delete( abPath );
+			File.Delete( manifestPath );
 		}
 
 		private static void ConvertToStoreFile( string saveFolder, string assetBundlePath, string manifestPath, string json, ProjectDetails details ) {
