@@ -57,7 +57,7 @@ namespace VisualizerV3.Visual {
 			inMemFile.Read( tmpBuffer );
 
 			using var abStream = new MemoryStream( tmpBuffer );
-			var manifest = 
+			//var manifest = 
 		}
 
 		private Stream LoadAndDecompress( string file ) {
