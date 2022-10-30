@@ -14,10 +14,12 @@ To compile the project is very simple.
 2. Download the project.
    1. This can be done by either downloading a Zip version and extracting it.
    2. Or you can do it professionally by using git! `git clone https://github.com/KyuVulpes/VisualizerV3.git`
-3. Open the project inside Unity.
+3. Make sure you have a license to Dynamic Bones (optional, but highly recommended).
+4. Download CSCore and place it in `Assets/Plugins/CSCore`.
+5. Open the project inside Unity.
    1. Inside Unity Hub is easy, as all you have to do it point Unity Hub at the folder.
    2. I don't know how to open it in a non-Hub version of Unity.
-4. Once the project is finish loading everything, go to the top bar and select `Build`, then click `Build Everything`.
+6. Once the project is finish loading everything, go to the top bar and select `Build`, then click `Build Everything`.
 
 That is it, now you have built the project for yourself. This project isn't only just meant to contribute to it, but also acts
 as an SDK.
