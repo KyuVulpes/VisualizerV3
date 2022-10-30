@@ -28,7 +28,6 @@ namespace VisualizerV3.Editor {
 			public string version;
 			public string author;
 			public string copyright;
-			public string icon;
 		}
 
 		private static readonly string BUILD_LOCATION = Path.Combine( Application.dataPath, "..", "Build" );
@@ -46,7 +45,7 @@ namespace VisualizerV3.Editor {
 			}
 		}
 
-		[MenuItem( "Build/Export To AssetBundle" )]
+		[MenuItem( "Build/Export To Package" )]
 		public static void BuildAssetBundle() {
 			/* First sees if the user has selected the GameObject that is meant to be put into the AssetBundle.
 			 * If the user hasn't, it then checks the scene to see if there is a game object with ObjectDetails.
@@ -76,8 +75,8 @@ namespace VisualizerV3.Editor {
 				projectName = componentDetails.ProjectName,
 				version     = componentDetails.Version,
 				copyright   = componentDetails.Copyright,
-				icon        = AssetDatabase.GetAssetPath( componentDetails.Icon ),
 			};
+			var imageLoc = AssetDatabase.GetAssetPath( componentDetails.Icon );
 
 			// Creates a new object to modify.
 			var toSave = Object.Instantiate( asset );
@@ -102,13 +101,13 @@ namespace VisualizerV3.Editor {
 				}
 			);
 
-			ConvertToStoreFile( saveFolder, abPath, manifestPath, json, details );
+			ConvertToStoreFile( saveFolder, abPath, manifestPath, json, imageLoc, details );
 
 			File.Delete( abPath );
 			File.Delete( manifestPath );
 		}
 
-		private static void ConvertToStoreFile( string saveFolder, string assetBundlePath, string manifestPath, string json, ProjectDetails details ) {
+		private static void ConvertToStoreFile( string saveFolder, string assetBundlePath, string manifestPath, string json, string imageLoc, ProjectDetails details ) {
 			using var fStream        = new FileStream( Path.Combine( saveFolder, $"{details.projectName}.pak" ), FileMode.Create, FileAccess.Write, FileShare.Read );
 			using var compressStream = new GZipStream( fStream, CompressionLevel.Optimal );
 			using var binWriter      = new BinaryWriter( compressStream, Encoding.Unicode );
@@ -120,15 +119,15 @@ namespace VisualizerV3.Editor {
 				}
 			);
 
-			if ( !string.IsNullOrWhiteSpace( details.icon ) ) {
+			if ( !string.IsNullOrWhiteSpace( imageLoc ) ) {
 				includes |= Includes.Image;
 			}
 
 			binWriter.Write( ( byte )includes );
 			binWriter.Write( json );
 
-			if ( !string.IsNullOrWhiteSpace( details.icon ) ) {
-				using var fStream2 = new FileStream( details.icon, FileMode.Open, FileAccess.Read );
+			if ( !string.IsNullOrWhiteSpace( imageLoc ) ) {
+				using var fStream2 = new FileStream( imageLoc, FileMode.Open, FileAccess.Read );
 
 				binWriter.Write( fStream2.Length );
 
