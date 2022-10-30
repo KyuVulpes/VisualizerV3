@@ -9,7 +9,6 @@ using UnityEditor.Build.Reporting;
 using UnityEngine;
 using VisualizerV3.Shared;
 using CompressionLevel = System.IO.Compression.CompressionLevel;
-
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
@@ -104,7 +103,7 @@ namespace VisualizerV3.Editor {
 			);
 
 			ConvertToStoreFile( saveFolder, abPath, manifestPath, json, details );
-			
+
 			File.Delete( abPath );
 			File.Delete( manifestPath );
 		}
@@ -136,13 +135,13 @@ namespace VisualizerV3.Editor {
 				fStream2.CopyTo( compressStream );
 
 			}
-			
+
 			using ( var fStream2 = new FileStream( manifestPath, FileMode.Open, FileAccess.Read ) ) {
 				binWriter.Write( fStream2.Length );
 
 				fStream2.CopyTo( compressStream );
 			}
-			
+
 			using ( var fStream2 = new FileStream( assetBundlePath, FileMode.Open, FileAccess.Read ) ) {
 				binWriter.Write( fStream2.Length );
 
@@ -175,7 +174,7 @@ namespace VisualizerV3.Editor {
 				new[] {
 					buildMap,
 				},
-				BuildAssetBundleOptions.StrictMode | BuildAssetBundleOptions.ChunkBasedCompression,
+				BuildAssetBundleOptions.StrictMode | BuildAssetBundleOptions.ChunkBasedCompression | BuildAssetBundleOptions.ForceRebuildAssetBundle,
 				BuildTarget.StandaloneWindows64
 			);
 
@@ -189,6 +188,10 @@ namespace VisualizerV3.Editor {
 			// This is meant to clear out the prefab from the project, as it is no longer needed.
 			File.Delete( Path.Combine( Application.dataPath, $"main.prefab" ) );
 			File.Delete( Path.Combine( Application.dataPath, $"main.prefab.meta" ) );
+
+			// For some reason, Unity is creating these as well. Don't know why.
+			File.Delete( Path.Combine( buildTo, $"Visualizer-V3" ) );
+			File.Delete( Path.Combine( buildTo, $"Visualizer-V3.manifest" ) );
 		}
 	}
 }
