@@ -17,6 +17,8 @@ namespace VisualizerV3.Visual {
 			AssetBundle = 0b0000_1000,
 		}
 
+		private GameObject spawned;
+
 		// Start is called before the first frame update
 		private void Start() {
 			LoadPackageFile( Path.Combine( Application.dataPath, "..", "Rex Kyuubi.pak" ) );
@@ -39,25 +41,28 @@ namespace VisualizerV3.Visual {
 			_ = reader.ReadString();
 
 			if ( includes.HasFlag( Includes.Image ) ) {
-				var skipLength = reader.ReadInt32();
+				var skipLength = reader.ReadInt64();
 
 				inMemFile.Position += skipLength;
 			}
 
-			var fSize     = reader.ReadInt32();
+			var fSize     = reader.ReadInt64();
 			var tmpBuffer = new byte[fSize];
 
 			inMemFile.Read( tmpBuffer );
 
 			using var manifestStream = new MemoryStream( tmpBuffer );
 
-			fSize     = reader.ReadInt32();
+			fSize     = reader.ReadInt64();
 			tmpBuffer = new byte[fSize];
 
 			inMemFile.Read( tmpBuffer );
 
 			using var abStream = new MemoryStream( tmpBuffer );
-			//var manifest = 
+			var       ab       = AssetBundle.LoadFromStream( abStream );
+			var       toSpawn  = ab.LoadAsset<GameObject>( "Assets/main.prefab" ); 
+			
+			spawned = Instantiate( toSpawn, transform );
 		}
 
 		private Stream LoadAndDecompress( string file ) {
@@ -71,6 +76,8 @@ namespace VisualizerV3.Visual {
 			using var decompress = new GZipStream( fStream, CompressionMode.Decompress );
 
 			decompress.CopyTo( memStream );
+
+			memStream.Position = 0;
 
 			return memStream;
 		}
