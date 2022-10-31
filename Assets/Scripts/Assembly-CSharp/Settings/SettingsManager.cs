@@ -11,6 +11,8 @@ namespace VisualizerV3.Settings {
 
 		#region Class
 
+		internal const string MAIN_CONTAINER_NAME = "Core";
+
 		public static event Action SettingsChanged;
 
 		public string SettingsLocation {
@@ -59,8 +61,10 @@ namespace VisualizerV3.Settings {
 				settings = new Dictionary<string, SettingsContainer>();
 			}
 
-			var settingsCheck = new FileSystemWatcher( MainSaveFile ) {
+			var settingsCheck = new FileSystemWatcher( SettingsLocation ) {
 				EnableRaisingEvents = true,
+				Filter = "settings.json",
+				Path = SettingsLocation,
 			};
 
 			settingsCheck.Changed += ( _, _ ) => {
@@ -115,7 +119,15 @@ namespace VisualizerV3.Settings {
 		}
 
 		public bool TryGetSetting<T>( string containerPath, string key, out T value ) {
-			var container = settings[containerPath];
+			SettingsContainer container;
+
+			value = default;
+			
+			try {
+				container = settings[containerPath];
+			} catch ( Exception ) {
+				return false;
+			}
 
 			return container.TryGetSetting( key, out value );
 		}
