@@ -1,9 +1,12 @@
 using System;
+using System.Collections;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using VisualizerV3.Settings;
 
 namespace VisualizerV3.Visual {
 	public class Spawner : MonoBehaviour {
@@ -33,16 +36,42 @@ namespace VisualizerV3.Visual {
 			AssetBundle = 0b0000_1000,
 		}
 
-		private GameObject spawned;
+		private const string SPAWN_KEY = "ToSpawn";
 
-		// Start is called before the first frame update
-		private void Start() {
-			
+		private volatile bool   settingsUpdate;
+		private          string currentFile;
+
+		private GameObject      spawned;
+		private SettingsManager manager;
+
+		private async void Awake() {
+			manager = SettingsManager.Singleton;
+
+			if ( !manager.TryGetSetting( SettingsManager.MAIN_CONTAINER_NAME, SPAWN_KEY, out string file ) ) {
+				file = Path.Combine( Application.persistentDataPath, "Packages", "Default.pak" );
+
+				manager.AddOrSetSetting( SettingsManager.MAIN_CONTAINER_NAME, "ToSpawn", file );
+			}
+
+			await LoadPackageFile( file );
+
+			SettingsManager.SettingsChanged += () => {settingsUpdate = true;};
 		}
 
-		// Update is called once per frame
-		private void Update() {
+		private async void Update() {
+			if ( !settingsUpdate ) {
+				return;
+			}
 
+			if ( !manager.TryGetSetting( SettingsManager.MAIN_CONTAINER_NAME, SPAWN_KEY, out string file ) ) {
+				return;
+			}
+
+			if ( file.Equals( currentFile, StringComparison.OrdinalIgnoreCase ) ) {
+				return;
+			}
+
+			await LoadPackageFile( file );
 		}
 
 		private async Task LoadPackageFile( string file ) {
@@ -79,6 +108,8 @@ namespace VisualizerV3.Visual {
 			var       toSpawn  = ab.LoadAsset<GameObject>( "Assets/main.prefab" );
 
 			spawned = Instantiate( toSpawn, transform );
+
+			currentFile = file;
 		}
 
 		private static async Task<Stream> LoadAndDecompress( string file ) {
