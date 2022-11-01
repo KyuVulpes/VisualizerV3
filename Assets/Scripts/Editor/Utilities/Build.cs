@@ -35,7 +35,7 @@ namespace VisualizerV3.Editor {
 		[MenuItem( "Build/Build Everything" )]
 		public static void BuildEverything() {
 			var levels = new[] {
-				"Assets/Scenes/Startup.unity", "Assets/Scenes/Core.unity", "Assets/Scenes/Audio.unity",
+				"Assets/Scenes/Main.unity",
 			};
 			var report = BuildPipeline.BuildPlayer( levels, Path.Combine( BUILD_LOCATION, "Wallpaper Visualizer.exe" ), BuildTarget.StandaloneWindows64, BuildOptions.None );
 
