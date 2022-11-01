@@ -37,7 +37,12 @@ namespace VisualizerV3.Editor {
 			var levels = new[] {
 				"Assets/Scenes/Main.unity",
 			};
-			var report = BuildPipeline.BuildPlayer( levels, Path.Combine( BUILD_LOCATION, "Wallpaper Visualizer.exe" ), BuildTarget.StandaloneWindows64, BuildOptions.None );
+			var report = BuildPipeline.BuildPlayer(
+				levels,
+				Path.Combine( BUILD_LOCATION, "Visualizer_V3.exe" ),
+				BuildTarget.StandaloneWindows64,
+				BuildOptions.CleanBuildCache | BuildOptions.CompressWithLz4 | BuildOptions.ShowBuiltPlayer
+			);
 
 			// Checks to see if the build process should continue to also include the .NET project.
 			if ( report.summary.result != BuildResult.Succeeded ) {
