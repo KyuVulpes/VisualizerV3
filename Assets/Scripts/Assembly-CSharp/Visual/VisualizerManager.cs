@@ -51,9 +51,9 @@ namespace VisualizerV3.Audio {
 			}
 		}
 
-		internal event Action<bool> StartDissolveEffect;
+		public event Action<bool> IdleTimeoutReached;
 
-		private bool dissolve;
+		private bool isIdle;
 		private bool updateRing;
 		private bool ready = true;
 
@@ -140,13 +140,13 @@ namespace VisualizerV3.Audio {
 			}
 
 			if ( ready ) {
-				if ( !dissolve ) {
+				if ( !isIdle ) {
 					CheckForIdle();
 
 					if ( idleTime >= idleTimeout ) {
-						dissolve = true;
+						isIdle = true;
 
-						StartDissolveEffect?.Invoke( dissolve );
+						IdleTimeoutReached?.Invoke( isIdle );
 					}
 				} else {
 					CheckForActivity();
@@ -215,9 +215,9 @@ namespace VisualizerV3.Audio {
 				}
 
 				idleTime = 0f;
-				dissolve = false;
+				isIdle = false;
 
-				StartDissolveEffect?.Invoke( dissolve );
+				IdleTimeoutReached?.Invoke( isIdle );
 			}
 		}
 
