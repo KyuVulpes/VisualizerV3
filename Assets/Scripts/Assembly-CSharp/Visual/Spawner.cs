@@ -68,6 +68,10 @@ namespace VisualizerV3.Visual {
 			
 			file = Path.Combine( Application.persistentDataPath, "Packages", file );
 
+			if ( !string.IsNullOrWhiteSpace( currentFile ) && currentFile.Equals( file, StringComparison.OrdinalIgnoreCase ) ) {
+				return;
+			}
+
 			await LoadPackageFile( file );
 		}
 
