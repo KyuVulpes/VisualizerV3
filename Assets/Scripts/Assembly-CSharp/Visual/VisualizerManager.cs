@@ -129,34 +129,6 @@ namespace VisualizerV3.Audio {
 			activeSwitch = StartCoroutine( ChangeRing() );
 
 			updateRing = false;
-
-			StartCoroutine( GrabNewTime() );
-
-			IEnumerator GrabNewTime() {
-				while ( true ) {
-					var gradient = normalGradient;
-					var now      = DateTimeOffset.Now;
-
-					if ( UseHoliday ) {
-						// Not switching to the switch statement since it makes it look weird.
-						// ReSharper disable once ConvertIfStatementToSwitchStatement
-						// ReSharper disable once ConvertIfStatementToSwitchExpression
-						if ( now.Month == 7 && now.Day == 4 ) {
-							gradient = fourthGradient;
-						} else if ( now.Month == 10 && now.Day == 31 ) {
-							gradient = halloweenGradient;
-						} else if ( now.Month == 12 ) {
-							gradient = holidayGradient;
-						}
-					}
-
-					gradientToUse = gradient;
-
-					yield return new WaitForSecondsRealtime( 30f );
-				}
-
-				// ReSharper disable once IteratorNeverReturns
-			}
 		}
 
 		// Update is called once per frame
@@ -194,23 +166,8 @@ namespace VisualizerV3.Audio {
 
 				activeSwitch = StartCoroutine( ChangeRing() );
 			}
-
-			void MakeReactorsReact() {
-				lock ( audioProcessor ) {
-					foreach ( var reactor in reactors ) {
-						if ( reactor is null || !reactor ) {
-							continue;
-						}
-
-						try {
-							reactor.React();
-						} catch ( Exception e ) {
-							// ReSharper disable once Unity.PerformanceCriticalCodeInvocation
-							Debug.LogWarning( $"A `{e.GetType().FullName}` exception occurred. The message is: {e.Message}" );
-						}
-					}
-				}
-			}
+			
+			HolidayUpdateCheck();
 		}
 
 		private void OnDestroy() {
@@ -218,6 +175,40 @@ namespace VisualizerV3.Audio {
 
 			nowSetter?.Wait();
 			nowSetter?.Dispose();
+		}
+
+		private void HolidayUpdateCheck() {
+			var gradient = normalGradient;
+			var now      = DateTimeOffset.Now;
+
+			if ( UseHoliday ) {
+				if ( now.Month == 7 && now.Day == 4 ) {
+					gradient = fourthGradient;
+				} else if ( now.Month == 10 && now.Day == 31 ) {
+					gradient = halloweenGradient;
+				} else if ( now.Month == 12 ) {
+					gradient = holidayGradient;
+				}
+			}
+
+			gradientToUse = gradient;
+		}
+		
+		private void MakeReactorsReact() {
+			lock ( audioProcessor ) {
+				foreach ( var reactor in reactors ) {
+					if ( reactor is null || !reactor ) {
+						continue;
+					}
+
+					try {
+						reactor.React();
+					} catch ( Exception e ) {
+						// ReSharper disable once Unity.PerformanceCriticalCodeInvocation
+						Debug.LogWarning( $"A `{e.GetType().FullName}` exception occurred. The message is: {e.Message}" );
+					}
+				}
+			}
 		}
 
 		private void CheckForActivity() {
