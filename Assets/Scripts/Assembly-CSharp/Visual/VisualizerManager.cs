@@ -215,7 +215,7 @@ namespace VisualizerV3.Audio {
 				}
 
 				idleTime = 0f;
-				isIdle = false;
+				isIdle   = false;
 
 				IdleTimeoutReached?.Invoke( isIdle );
 			}
@@ -234,7 +234,7 @@ namespace VisualizerV3.Audio {
 
 			idleTime += Time.deltaTime;
 		}
-		
+
 		private void UpdateSettings() {
 			if ( settingsManager.TryGetSetting( SettingsManager.MAIN_CONTAINER_NAME, VISUALIZER_RING_TYPE, out string strType ) ) {
 				if ( ShapeCreator is null || ShapeCreator.GetType().FullName != strType ) {
@@ -251,7 +251,7 @@ namespace VisualizerV3.Audio {
 
 				if ( creatorType == null ) {
 					ShapeCreator = new SatanCircle();
-					
+
 					settingsManager.AddOrSetSetting( SettingsManager.MAIN_CONTAINER_NAME, VISUALIZER_RING_TYPE, ShapeCreator.GetType().ToString() );
 				} else {
 					ShapeCreator = ( VisualizerShape )Activator.CreateInstance( creatorType );
