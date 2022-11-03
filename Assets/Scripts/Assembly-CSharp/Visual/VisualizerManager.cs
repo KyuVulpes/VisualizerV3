@@ -5,14 +5,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Serialization;
+using VisualizerV3.Settings;
 using VisualizerV3.Visual.Reactions;
 using VisualizerV3.Visual.Shapes;
 
 namespace VisualizerV3.Audio {
 	public class VisualizerManager : MonoBehaviour {
 		private const string ROTATE_SPEED_SETTING = "visualizer.rotSpeed";
-		private const string VISUALIZER_RING_TYPE = "visualizer.ringType";
-		private const string USE_HOLIDAY_KEY      = "visualizer.useHoliday";
+		private const string VISUALIZER_RING_TYPE = "RingType";
+		private const string USE_HOLIDAY_KEY      = "EnableHolidayThemes";
 
 		// ReSharper disable once MemberCanBePrivate.Global
 		public bool UseHoliday { get; set; } = true;
@@ -94,23 +95,25 @@ namespace VisualizerV3.Audio {
 		[SerializeField, GradientUsage( true )]
 		private Gradient holidayGradient;
 
-		private Task          nowSetter;
-		private Gradient      gradientToUse;
-		private AudioProcessor     audioProcessor;
-		private Coroutine     activeSwitch;
+		private Task             nowSetter;
+		private Gradient         gradientToUse;
+		private Coroutine        activeSwitch;
+		private AudioProcessor   audioProcessor;
+		private SettingsManager  settingsManager;
 		private List<BarReactor> reactors;
 
 		public Color GetColor( float value ) => gradientToUse.Evaluate( value );
 
 		// Start is called before the first frame update
 		private void Awake() {
-			reactors    = new List<BarReactor>();
-			tokenSource = new CancellationTokenSource();
-			audioProcessor   = GetComponent<AudioProcessor>();
+			reactors        = new List<BarReactor>();
+			tokenSource     = new CancellationTokenSource();
+			audioProcessor  = GetComponent<AudioProcessor>();
+			settingsManager = SettingsManager.Singleton;
 
-			//Settings.SettingsRefreshed += UpdateSettings;
+			UpdateSettings();
 
-			//UpdateSettings();
+			SettingsManager.SettingsChanged += UpdateSettings;
 
 			ShapeCreator = new SatanCircle();
 
@@ -166,7 +169,7 @@ namespace VisualizerV3.Audio {
 
 				activeSwitch = StartCoroutine( ChangeRing() );
 			}
-			
+
 			HolidayUpdateCheck();
 		}
 
@@ -193,7 +196,7 @@ namespace VisualizerV3.Audio {
 
 			gradientToUse = gradient;
 		}
-		
+
 		private void MakeReactorsReact() {
 			lock ( audioProcessor ) {
 				foreach ( var reactor in reactors ) {
@@ -239,29 +242,31 @@ namespace VisualizerV3.Audio {
 
 		// TODO: Work on implementing the settings manager.
 		private void UpdateSettings() {
-			// if ( Settings.Singleton.TryGetSetting( ROTATE_SPEED_SETTING, out float rotSpeed ) ) {
-			// 	RotateSpeed = (int) rotSpeed;
-			// }
-			//
-			// if ( Settings.Singleton.TryGetSetting( VISUALIZER_RING_TYPE, out string strType ) ) {
-			// 	var asm = typeof( IVisualizeShape ).Assembly;
-			//
-			// 	if ( ShapeCreator is null || ShapeCreator.GetType().FullName != strType ) {
-			// 		Debug.Log( $"{strType}\n{ShapeCreator is null}\n{StackTraceUtility.ExtractStackTrace()}" );
-			// 	}
-			//
-			// 	Assert.IsNotNull( strType );
-			//
-			// 	ShapeCreator = Activator.CreateInstance( asm.FullName, strType ).Unwrap() as IVisualizeShape;
-			// } else if ( ShapeCreator is null ) {
-			// 	ShapeCreator = new MirroredCircle();
-			//
-			// 	Debug.Log( ShapeCreator.GetType().FullName );
-			// }
-			//
-			// if ( Settings.Singleton.TryGetSetting( USE_HOLIDAY_KEY, out bool useHoliday ) ) {
-			// 	UseHoliday = useHoliday;
-			// }
+			if ( settingsManager.TryGetSetting( SettingsManager.MAIN_CONTAINER_NAME, VISUALIZER_RING_TYPE, out string strType ) ) {
+				if ( ShapeCreator is null || ShapeCreator.GetType().FullName != strType ) {
+					Debug.Log( $"{strType}\n{ShapeCreator is null}\n{StackTraceUtility.ExtractStackTrace()}" );
+				}
+
+				if ( string.IsNullOrWhiteSpace( strType ) ) {
+					strType = typeof(SatanCircle).ToString();
+
+					settingsManager.AddOrSetSetting( SettingsManager.MAIN_CONTAINER_NAME, VISUALIZER_RING_TYPE, strType );
+				}
+
+				var creatorType = Type.GetType( strType );
+
+				ShapeCreator = ( VisualizerShape )Activator.CreateInstance( creatorType );
+			} else if ( ShapeCreator is null ) {
+				ShapeCreator = new SatanCircle();
+
+				settingsManager.AddOrSetSetting( SettingsManager.MAIN_CONTAINER_NAME, VISUALIZER_RING_TYPE, ShapeCreator.GetType().ToString() );
+			}
+
+			if ( settingsManager.TryGetSetting( SettingsManager.MAIN_CONTAINER_NAME, USE_HOLIDAY_KEY, out bool useHoliday ) ) {
+				UseHoliday = useHoliday;
+			} else {
+				settingsManager.AddOrSetSetting( SettingsManager.MAIN_CONTAINER_NAME, USE_HOLIDAY_KEY, true );
+			}
 		}
 
 		private IEnumerator ChangeRing() {
@@ -288,18 +293,18 @@ namespace VisualizerV3.Audio {
 
 			// Loops through the entire array of reactors to be used.
 			for ( var i = 0; i < posArray.Length; ++i ) {
-				BarReactor   barReactor;
-				Transform rTrans;
-				var       created = false;
+				BarReactor barReactor;
+				Transform  rTrans;
+				var        created = false;
 
 				// A simple check to see if a reactor needs to be created or reused.
 				if ( i >= transform.childCount ) {
-					rTrans  = Instantiate( VisualizerResources.CUBE, transform ).transform;
+					rTrans     = Instantiate( VisualizerResources.CUBE, transform ).transform;
 					barReactor = rTrans.GetComponent<BarReactor>();
 
 					created = true;
 				} else {
-					rTrans  = transform.GetChild( i );
+					rTrans     = transform.GetChild( i );
 					barReactor = rTrans.GetComponent<BarReactor>();
 				}
 
