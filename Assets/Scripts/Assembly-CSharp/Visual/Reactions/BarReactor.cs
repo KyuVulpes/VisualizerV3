@@ -12,10 +12,11 @@ namespace VisualizerV3.Visual.Reactions {
 
 		private float minHeight;
 
-		private AudioProcessor    audioProcessor;
-		private VisualizerManager visManager;
 		private Material          mat;
 		private Coroutine         dissolveRoutine;
+		private MeshRenderer      meshRenderer;
+		private AudioProcessor    audioProcessor;
+		private VisualizerManager visManager;
 
 		// Update is called once per frame
 		internal void React() {
@@ -42,8 +43,9 @@ namespace VisualizerV3.Visual.Reactions {
 		// Use this for initialization
 		private void Start() {
 			audioProcessor = GetComponentInParent<AudioProcessor>();
+			meshRenderer   = GetComponent<MeshRenderer>();
 			visManager     = GetComponentInParent<VisualizerManager>();
-			mat            = GetComponent<MeshRenderer>().material;
+			mat            = meshRenderer.material;
 
 			visManager.IdleTimeoutReached += Dissolve;
 
@@ -72,9 +74,15 @@ namespace VisualizerV3.Visual.Reactions {
 
 				yield return null;
 			}
+
+			// This helps performance by a lot, since there would probably be a lot of these renderers.
+			meshRenderer.enabled = false;
 		}
 
 		private IEnumerator DissolveIn( float amount ) {
+			// This helps performance by a lot, since there would probably be a lot of these renderers.
+			meshRenderer.enabled = true;
+
 			while ( amount < 1f ) {
 				amount += Time.deltaTime * ( 1 / visManager.DissolveSpeed );
 
