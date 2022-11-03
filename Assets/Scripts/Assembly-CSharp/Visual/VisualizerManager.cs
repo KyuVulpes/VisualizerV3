@@ -11,7 +11,6 @@ using VisualizerV3.Visual.Shapes;
 
 namespace VisualizerV3.Audio {
 	public class VisualizerManager : MonoBehaviour {
-		private const string ROTATE_SPEED_SETTING = "visualizer.rotSpeed";
 		private const string VISUALIZER_RING_TYPE = "RingType";
 		private const string USE_HOLIDAY_KEY      = "EnableHolidayThemes";
 
@@ -76,8 +75,6 @@ namespace VisualizerV3.Audio {
 		private float idleTimeout = 4f;
 
 		private float idleTime;
-
-		private Vector3Int rotateSpeed = Vector3Int.zero;
 
 		private VisualizerShape shapeCreator;
 
@@ -154,8 +151,6 @@ namespace VisualizerV3.Audio {
 				} else {
 					CheckForActivity();
 				}
-
-				transform.Rotate( ( Vector3 )rotateSpeed * Time.deltaTime );
 			}
 
 			try {
@@ -239,8 +234,7 @@ namespace VisualizerV3.Audio {
 
 			idleTime += Time.deltaTime;
 		}
-
-		// TODO: Work on implementing the settings manager.
+		
 		private void UpdateSettings() {
 			if ( settingsManager.TryGetSetting( SettingsManager.MAIN_CONTAINER_NAME, VISUALIZER_RING_TYPE, out string strType ) ) {
 				if ( ShapeCreator is null || ShapeCreator.GetType().FullName != strType ) {
@@ -255,7 +249,13 @@ namespace VisualizerV3.Audio {
 
 				var creatorType = Type.GetType( strType );
 
-				ShapeCreator = ( VisualizerShape )Activator.CreateInstance( creatorType );
+				if ( creatorType == null ) {
+					ShapeCreator = new SatanCircle();
+					
+					settingsManager.AddOrSetSetting( SettingsManager.MAIN_CONTAINER_NAME, VISUALIZER_RING_TYPE, ShapeCreator.GetType().ToString() );
+				} else {
+					ShapeCreator = ( VisualizerShape )Activator.CreateInstance( creatorType );
+				}
 			} else if ( ShapeCreator is null ) {
 				ShapeCreator = new SatanCircle();
 
