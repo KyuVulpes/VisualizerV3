@@ -46,7 +46,7 @@ namespace VisualizerV3.Settings {
 				FloatFormatHandling        = FloatFormatHandling.Symbol,
 				FloatParseHandling         = FloatParseHandling.Double,
 				NullValueHandling          = NullValueHandling.Include,
-				DefaultValueHandling       = DefaultValueHandling.IgnoreAndPopulate,
+				DefaultValueHandling       = DefaultValueHandling.Include,
 				MissingMemberHandling      = MissingMemberHandling.Ignore,
 				PreserveReferencesHandling = PreserveReferencesHandling.None,
 				ReferenceLoopHandling      = ReferenceLoopHandling.Ignore,
