@@ -36,7 +36,8 @@ namespace VisualizerV3.Visual {
 			AssetBundle = 0b0000_1000,
 		}
 
-		private const string SPAWN_KEY = "ToSpawn";
+		private const string SPAWN_KEY    = "ToSpawn";
+		private const string DEFAULT_FILE = "Default.pak";
 
 		private volatile bool   settingsUpdate;
 		private          string currentFile;
@@ -47,13 +48,7 @@ namespace VisualizerV3.Visual {
 		private async void Awake() {
 			manager = SettingsManager.Singleton;
 
-			if ( !manager.TryGetSetting( SettingsManager.MAIN_CONTAINER_NAME, SPAWN_KEY, out string file ) ) {
-				file = Path.Combine( Application.persistentDataPath, "Packages", "Default.pak" );
-
-				manager.AddOrSetSetting( SettingsManager.MAIN_CONTAINER_NAME, "ToSpawn", file );
-			}
-
-			await LoadPackageFile( file );
+			await LoadSettings();
 
 			SettingsManager.SettingsChanged += () => {settingsUpdate = true;};
 		}
@@ -63,13 +58,15 @@ namespace VisualizerV3.Visual {
 				return;
 			}
 
-			if ( !manager.TryGetSetting( SettingsManager.MAIN_CONTAINER_NAME, SPAWN_KEY, out string file ) ) {
-				return;
-			}
+			await LoadSettings();
+		}
 
-			if ( file.Equals( currentFile, StringComparison.OrdinalIgnoreCase ) ) {
-				return;
+		private async Task LoadSettings() {
+			if ( !manager.TryGetSetting( SettingsManager.MAIN_CONTAINER_NAME, SPAWN_KEY, out string file ) || file.Contains( Path.PathSeparator ) ) {
+				manager.AddOrSetSetting( SettingsManager.MAIN_CONTAINER_NAME, "ToSpawn", DEFAULT_FILE );
 			}
+			
+			file = Path.Combine( Application.persistentDataPath, "Packages", file );
 
 			await LoadPackageFile( file );
 		}
@@ -106,6 +103,10 @@ namespace VisualizerV3.Visual {
 			using var abStream = new MemoryStream( tmpBuffer );
 			var       ab       = AssetBundle.LoadFromStream( abStream );
 			var       toSpawn  = ab.LoadAsset<GameObject>( "Assets/main.prefab" );
+
+			if ( spawned ) {
+				Destroy( spawned );
+			}
 
 			spawned = Instantiate( toSpawn, transform );
 
