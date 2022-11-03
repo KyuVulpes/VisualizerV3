@@ -204,8 +204,7 @@ namespace VisualizerV3.Audio {
 					try {
 						reactor.React();
 					} catch ( Exception e ) {
-						// ReSharper disable once Unity.PerformanceCriticalCodeInvocation
-						Debug.LogWarning( $"A `{e.GetType().FullName}` exception occurred. The message is: {e.Message}" );
+						Debug.LogException( e );
 					}
 				}
 			}
