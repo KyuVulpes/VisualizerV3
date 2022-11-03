@@ -45,21 +45,21 @@ namespace VisualizerV3.Visual.Reactions {
 			visManager     = GetComponentInParent<VisualizerManager>();
 			mat            = GetComponent<MeshRenderer>().material;
 
-			visManager.StartDissolveEffect += Dissolve;
+			visManager.IdleTimeoutReached += Dissolve;
 
 			minHeight = VisualizerResources.CUBE.transform.localScale.y;
 		}
 
-		private void OnDestroy() => visManager.StartDissolveEffect -= Dissolve;
+		private void OnDestroy() => visManager.IdleTimeoutReached -= Dissolve;
 
-		private void Dissolve( bool away ) {
+		private void Dissolve( bool idle ) {
 			var amount = mat.GetFloat( DISSOLVE_PERCENT );
 
 			if ( dissolveRoutine != null ) {
 				StopCoroutine( dissolveRoutine );
 			}
 
-			dissolveRoutine = StartCoroutine( away ? DissolveAway( amount ) : DissolveIn( amount ) );
+			dissolveRoutine = StartCoroutine( idle ? DissolveAway( amount ) : DissolveIn( amount ) );
 		}
 
 		private IEnumerator DissolveAway( float amount ) {
