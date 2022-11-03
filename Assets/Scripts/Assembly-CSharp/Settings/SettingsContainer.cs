@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace VisualizerV3.Settings {
 	internal sealed class SettingsContainer {
 		
+		[JsonExtensionData]
 		private readonly Dictionary<string, object> containedSettings;
 
 		public SettingsContainer( Dictionary<string, object> containedSettings ) {
-			this.containedSettings = containedSettings;
+			this.containedSettings = containedSettings ?? new Dictionary<string, object>();
 		}
 
 		public bool ContainsKey( string key ) => containedSettings.ContainsKey( key );

@@ -48,7 +48,7 @@ namespace VisualizerV3.Settings {
 				NullValueHandling          = NullValueHandling.Include,
 				DefaultValueHandling       = DefaultValueHandling.IgnoreAndPopulate,
 				MissingMemberHandling      = MissingMemberHandling.Ignore,
-				PreserveReferencesHandling = PreserveReferencesHandling.All,
+				PreserveReferencesHandling = PreserveReferencesHandling.None,
 				ReferenceLoopHandling      = ReferenceLoopHandling.Ignore,
 				ObjectCreationHandling     = ObjectCreationHandling.Auto,
 				StringEscapeHandling       = StringEscapeHandling.EscapeNonAscii,
@@ -77,12 +77,22 @@ namespace VisualizerV3.Settings {
 						continue;
 					}
 
+					LoadSettingFile();
+					
 					SettingsChanged?.Invoke();
 
 					checksum = calcChecksum;
 
 					return;
 				}
+			};
+
+			Application.quitting += () => {
+				using var fStream    = new FileStream( MainSaveFile, FileMode.Create, FileAccess.Write, FileShare.Read );
+				using var writer     = new StreamWriter( fStream, Encoding.Unicode );
+				using var jsonWriter = new JsonTextWriter( writer );
+
+				serializer.Serialize( jsonWriter, settings );
 			};
 		}
 
